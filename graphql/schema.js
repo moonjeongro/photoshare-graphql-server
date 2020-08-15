@@ -1,20 +1,45 @@
-import {gql} from 'apollo-server';
+import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
+    type Query {
+        totalPhotos: Int!
+        allPhotos: [Photo!]!
+    }
 
-  type Photo {
-    id: ID!
-    url: String!
-    name: String!
-    description: String
-  }
+    type Mutation{
+        postPhoto(input: postPhotoInput!): Photo!
+    }
 
-  type Query {
-    totalPhotos: Int!
-    allPhotos: [Photo!]!
-  }
+    enum PhotoCategory {
+        SELFIE
+        PORTRATE
+        ACTION
+        LANDSCAPE
+        GRAPHIC
+    }
 
-  type Mutation{
-    postPhoto(name: String! description: String): Photo!
-  }
+    scalar DateTime
+
+    type Photo {
+        id: ID!
+        url: String!
+        description: String
+        category: PhotoCategory!
+        postedBy: User!
+        taggedUsers: [User]
+        created: DateTime!
+    }
+
+    type User {
+        githubId: ID!
+        name: String
+        avater: String
+        postedPhotos: [Photo]
+        taggedPhotos: [Photo]
+    }
+
+    input postPhotoInput {
+        category: PhotoCategory=PORTRATE
+        description: String
+    }
 `;
